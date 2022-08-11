@@ -80,6 +80,8 @@ event Supply:
     prevSupply: uint256
     supply: uint256
 
+event UpdateFeeCollector:
+    newFeeCollector: address
 
 WEEK: constant(uint256) = 7 * 86400  # all future times are rounded by week
 MAXTIME: constant(uint256) = 2 * 365 * 86400  # 2 years
@@ -95,10 +97,8 @@ point_history: public(Point[100000000000000000000000000000])  # epoch -> unsigne
 user_point_history: public(HashMap[address, Point[1000000000]])  # user -> Point[user_epoch]
 user_point_epoch: public(HashMap[address, uint256])
 slope_changes: public(HashMap[uint256, int128])  # time -> signed slope change
-
-# Aragon's view methods for compatibility
-controller: public(address)
-transfersEnabled: public(bool)
+ 
+fee_collector: public(address) 
 
 name: public(String[64])
 symbol: public(String[32])
@@ -115,7 +115,7 @@ future_admin: public(address)
 
 
 @external
-def __init__(token_addr: address, _name: String[64], _symbol: String[32], _version: String[32]):
+def __init__(token_addr: address, _name: String[64], _symbol: String[32], _version: String[32], _fee_collector: address):
     """
     @notice Contract constructor
     @param token_addr `ERC20CRV` token address
@@ -127,9 +127,7 @@ def __init__(token_addr: address, _name: String[64], _symbol: String[32], _versi
     self.token = token_addr
     self.point_history[0].blk = block.number
     self.point_history[0].ts = block.timestamp
-    self.controller = msg.sender
-    self.transfersEnabled = True
-
+    
     _decimals: uint256 = ERC20(token_addr).decimals()
     assert _decimals <= 255
     self.decimals = _decimals
@@ -137,6 +135,7 @@ def __init__(token_addr: address, _name: String[64], _symbol: String[32], _versi
     self.name = _name
     self.symbol = _symbol
     self.version = _version
+    self.fee_collector = _fee_collector
 
 
 @external
@@ -148,6 +147,17 @@ def commit_transfer_ownership(addr: address):
     assert msg.sender == self.admin  # dev: admin only
     self.future_admin = addr
     log CommitOwnership(addr)
+
+
+@external
+def update_fee_collector(addr: address):
+    """
+    @notice Updates address of fee collector to `addr`
+    @param addr Address to use as fee collector
+    """
+    assert msg.sender == self.admin  # dev: admin only
+    self.fee_collector = addr
+    log UpdateFeeCollector(addr)
 
 
 @external
@@ -658,14 +668,3 @@ def totalSupplyAt(_block: uint256) -> uint256:
     # Now dt contains info on how far are we beyond point
 
     return self.supply_at(point, point.ts + dt)
-
-
-# Dummy methods for compatibility with Aragon
-
-@external
-def changeController(_newController: address):
-    """
-    @dev Dummy method required for Aragon compatibility
-    """
-    assert msg.sender == self.controller
-    self.controller = _newController

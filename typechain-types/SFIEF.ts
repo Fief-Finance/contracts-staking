@@ -21,6 +21,7 @@ export interface SFIEFInterface extends utils.Interface {
   contractName: "SFIEF";
   functions: {
     "commit_transfer_ownership(address)": FunctionFragment;
+    "update_fee_collector(address)": FunctionFragment;
     "apply_transfer_ownership()": FunctionFragment;
     "commit_smart_wallet_checker(address)": FunctionFragment;
     "apply_smart_wallet_checker()": FunctionFragment;
@@ -37,7 +38,6 @@ export interface SFIEFInterface extends utils.Interface {
     "balanceOfAt(address,uint256)": FunctionFragment;
     "totalSupply()": FunctionFragment;
     "totalSupplyAt(uint256)": FunctionFragment;
-    "changeController(address)": FunctionFragment;
     "token()": FunctionFragment;
     "supply()": FunctionFragment;
     "locked(address)": FunctionFragment;
@@ -46,8 +46,7 @@ export interface SFIEFInterface extends utils.Interface {
     "user_point_history(address,uint256)": FunctionFragment;
     "user_point_epoch(address)": FunctionFragment;
     "slope_changes(uint256)": FunctionFragment;
-    "controller()": FunctionFragment;
-    "transfersEnabled()": FunctionFragment;
+    "fee_collector()": FunctionFragment;
     "name()": FunctionFragment;
     "symbol()": FunctionFragment;
     "version()": FunctionFragment;
@@ -60,6 +59,10 @@ export interface SFIEFInterface extends utils.Interface {
 
   encodeFunctionData(
     functionFragment: "commit_transfer_ownership",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "update_fee_collector",
     values: [string]
   ): string;
   encodeFunctionData(
@@ -117,10 +120,6 @@ export interface SFIEFInterface extends utils.Interface {
     functionFragment: "totalSupplyAt",
     values: [BigNumberish]
   ): string;
-  encodeFunctionData(
-    functionFragment: "changeController",
-    values: [string]
-  ): string;
   encodeFunctionData(functionFragment: "token", values?: undefined): string;
   encodeFunctionData(functionFragment: "supply", values?: undefined): string;
   encodeFunctionData(functionFragment: "locked", values: [string]): string;
@@ -142,11 +141,7 @@ export interface SFIEFInterface extends utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "controller",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "transfersEnabled",
+    functionFragment: "fee_collector",
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
@@ -169,6 +164,10 @@ export interface SFIEFInterface extends utils.Interface {
 
   decodeFunctionResult(
     functionFragment: "commit_transfer_ownership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "update_fee_collector",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -226,10 +225,6 @@ export interface SFIEFInterface extends utils.Interface {
     functionFragment: "totalSupplyAt",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "changeController",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "token", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "supply", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "locked", data: BytesLike): Result;
@@ -250,9 +245,8 @@ export interface SFIEFInterface extends utils.Interface {
     functionFragment: "slope_changes",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "controller", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "transfersEnabled",
+    functionFragment: "fee_collector",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
@@ -279,6 +273,7 @@ export interface SFIEFInterface extends utils.Interface {
     "Deposit(address,uint256,uint256,int128,uint256)": EventFragment;
     "Withdraw(address,uint256,uint256)": EventFragment;
     "Supply(uint256,uint256)": EventFragment;
+    "UpdateFeeCollector(address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "CommitOwnership"): EventFragment;
@@ -286,6 +281,7 @@ export interface SFIEFInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: "Deposit"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Withdraw"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Supply"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "UpdateFeeCollector"): EventFragment;
 }
 
 export type CommitOwnershipEvent = TypedEvent<[string], { admin: string }>;
@@ -323,6 +319,14 @@ export type SupplyEvent = TypedEvent<
 
 export type SupplyEventFilter = TypedEventFilter<SupplyEvent>;
 
+export type UpdateFeeCollectorEvent = TypedEvent<
+  [string],
+  { newFeeCollector: string }
+>;
+
+export type UpdateFeeCollectorEventFilter =
+  TypedEventFilter<UpdateFeeCollectorEvent>;
+
 export interface SFIEF extends BaseContract {
   contractName: "SFIEF";
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -352,6 +356,11 @@ export interface SFIEF extends BaseContract {
 
   functions: {
     commit_transfer_ownership(
+      addr: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    update_fee_collector(
       addr: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -441,11 +450,6 @@ export interface SFIEF extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
-    changeController(
-      _newController: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     token(overrides?: CallOverrides): Promise<[string]>;
 
     supply(overrides?: CallOverrides): Promise<[BigNumber]>;
@@ -492,9 +496,7 @@ export interface SFIEF extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
-    controller(overrides?: CallOverrides): Promise<[string]>;
-
-    transfersEnabled(overrides?: CallOverrides): Promise<[boolean]>;
+    fee_collector(overrides?: CallOverrides): Promise<[string]>;
 
     name(overrides?: CallOverrides): Promise<[string]>;
 
@@ -514,6 +516,11 @@ export interface SFIEF extends BaseContract {
   };
 
   commit_transfer_ownership(
+    addr: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  update_fee_collector(
     addr: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -603,11 +610,6 @@ export interface SFIEF extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  changeController(
-    _newController: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   token(overrides?: CallOverrides): Promise<string>;
 
   supply(overrides?: CallOverrides): Promise<BigNumber>;
@@ -651,9 +653,7 @@ export interface SFIEF extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  controller(overrides?: CallOverrides): Promise<string>;
-
-  transfersEnabled(overrides?: CallOverrides): Promise<boolean>;
+  fee_collector(overrides?: CallOverrides): Promise<string>;
 
   name(overrides?: CallOverrides): Promise<string>;
 
@@ -673,6 +673,11 @@ export interface SFIEF extends BaseContract {
 
   callStatic: {
     commit_transfer_ownership(
+      addr: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    update_fee_collector(
       addr: string,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -754,11 +759,6 @@ export interface SFIEF extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    changeController(
-      _newController: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     token(overrides?: CallOverrides): Promise<string>;
 
     supply(overrides?: CallOverrides): Promise<BigNumber>;
@@ -805,9 +805,7 @@ export interface SFIEF extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    controller(overrides?: CallOverrides): Promise<string>;
-
-    transfersEnabled(overrides?: CallOverrides): Promise<boolean>;
+    fee_collector(overrides?: CallOverrides): Promise<string>;
 
     name(overrides?: CallOverrides): Promise<string>;
 
@@ -864,10 +862,20 @@ export interface SFIEF extends BaseContract {
       supply?: null
     ): SupplyEventFilter;
     Supply(prevSupply?: null, supply?: null): SupplyEventFilter;
+
+    "UpdateFeeCollector(address)"(
+      newFeeCollector?: null
+    ): UpdateFeeCollectorEventFilter;
+    UpdateFeeCollector(newFeeCollector?: null): UpdateFeeCollectorEventFilter;
   };
 
   estimateGas: {
     commit_transfer_ownership(
+      addr: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    update_fee_collector(
       addr: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -957,11 +965,6 @@ export interface SFIEF extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    changeController(
-      _newController: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     token(overrides?: CallOverrides): Promise<BigNumber>;
 
     supply(overrides?: CallOverrides): Promise<BigNumber>;
@@ -991,9 +994,7 @@ export interface SFIEF extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    controller(overrides?: CallOverrides): Promise<BigNumber>;
-
-    transfersEnabled(overrides?: CallOverrides): Promise<BigNumber>;
+    fee_collector(overrides?: CallOverrides): Promise<BigNumber>;
 
     name(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1014,6 +1015,11 @@ export interface SFIEF extends BaseContract {
 
   populateTransaction: {
     commit_transfer_ownership(
+      addr: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    update_fee_collector(
       addr: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -1106,11 +1112,6 @@ export interface SFIEF extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    changeController(
-      _newController: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     token(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     supply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -1143,9 +1144,7 @@ export interface SFIEF extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    controller(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    transfersEnabled(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    fee_collector(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
