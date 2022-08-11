@@ -47,6 +47,7 @@ export interface SFIEFInterface extends utils.Interface {
     "user_point_epoch(address)": FunctionFragment;
     "slope_changes(uint256)": FunctionFragment;
     "fee_collector()": FunctionFragment;
+    "fee_percent()": FunctionFragment;
     "name()": FunctionFragment;
     "symbol()": FunctionFragment;
     "version()": FunctionFragment;
@@ -142,6 +143,10 @@ export interface SFIEFInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "fee_collector",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "fee_percent",
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
@@ -249,6 +254,10 @@ export interface SFIEFInterface extends utils.Interface {
     functionFragment: "fee_collector",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "fee_percent",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "version", data: BytesLike): Result;
@@ -274,6 +283,7 @@ export interface SFIEFInterface extends utils.Interface {
     "Withdraw(address,uint256,uint256)": EventFragment;
     "Supply(uint256,uint256)": EventFragment;
     "UpdateFeeCollector(address)": EventFragment;
+    "PerformanceFeeCollected(uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "CommitOwnership"): EventFragment;
@@ -282,6 +292,7 @@ export interface SFIEFInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: "Withdraw"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Supply"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "UpdateFeeCollector"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "PerformanceFeeCollected"): EventFragment;
 }
 
 export type CommitOwnershipEvent = TypedEvent<[string], { admin: string }>;
@@ -326,6 +337,14 @@ export type UpdateFeeCollectorEvent = TypedEvent<
 
 export type UpdateFeeCollectorEventFilter =
   TypedEventFilter<UpdateFeeCollectorEvent>;
+
+export type PerformanceFeeCollectedEvent = TypedEvent<
+  [BigNumber],
+  { amount: BigNumber }
+>;
+
+export type PerformanceFeeCollectedEventFilter =
+  TypedEventFilter<PerformanceFeeCollectedEvent>;
 
 export interface SFIEF extends BaseContract {
   contractName: "SFIEF";
@@ -498,6 +517,8 @@ export interface SFIEF extends BaseContract {
 
     fee_collector(overrides?: CallOverrides): Promise<[string]>;
 
+    fee_percent(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     name(overrides?: CallOverrides): Promise<[string]>;
 
     symbol(overrides?: CallOverrides): Promise<[string]>;
@@ -655,6 +676,8 @@ export interface SFIEF extends BaseContract {
 
   fee_collector(overrides?: CallOverrides): Promise<string>;
 
+  fee_percent(overrides?: CallOverrides): Promise<BigNumber>;
+
   name(overrides?: CallOverrides): Promise<string>;
 
   symbol(overrides?: CallOverrides): Promise<string>;
@@ -807,6 +830,8 @@ export interface SFIEF extends BaseContract {
 
     fee_collector(overrides?: CallOverrides): Promise<string>;
 
+    fee_percent(overrides?: CallOverrides): Promise<BigNumber>;
+
     name(overrides?: CallOverrides): Promise<string>;
 
     symbol(overrides?: CallOverrides): Promise<string>;
@@ -867,6 +892,11 @@ export interface SFIEF extends BaseContract {
       newFeeCollector?: null
     ): UpdateFeeCollectorEventFilter;
     UpdateFeeCollector(newFeeCollector?: null): UpdateFeeCollectorEventFilter;
+
+    "PerformanceFeeCollected(uint256)"(
+      amount?: null
+    ): PerformanceFeeCollectedEventFilter;
+    PerformanceFeeCollected(amount?: null): PerformanceFeeCollectedEventFilter;
   };
 
   estimateGas: {
@@ -995,6 +1025,8 @@ export interface SFIEF extends BaseContract {
     ): Promise<BigNumber>;
 
     fee_collector(overrides?: CallOverrides): Promise<BigNumber>;
+
+    fee_percent(overrides?: CallOverrides): Promise<BigNumber>;
 
     name(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1145,6 +1177,8 @@ export interface SFIEF extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     fee_collector(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    fee_percent(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

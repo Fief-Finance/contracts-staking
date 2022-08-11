@@ -83,6 +83,9 @@ event Supply:
 event UpdateFeeCollector:
     newFeeCollector: address
 
+event PerformanceFeeCollected:
+    amount: uint256
+
 WEEK: constant(uint256) = 7 * 86400  # all future times are rounded by week
 MAXTIME: constant(uint256) = 2 * 365 * 86400  # 2 years
 MULTIPLIER: constant(uint256) = 10 ** 18
@@ -98,7 +101,8 @@ user_point_history: public(HashMap[address, Point[1000000000]])  # user -> Point
 user_point_epoch: public(HashMap[address, uint256])
 slope_changes: public(HashMap[uint256, int128])  # time -> signed slope change
  
-fee_collector: public(address) 
+fee_collector: public(address)
+fee_percent: public(uint256) # scaled up by multiplier 
 
 name: public(String[64])
 symbol: public(String[32])
@@ -115,7 +119,7 @@ future_admin: public(address)
 
 
 @external
-def __init__(token_addr: address, _name: String[64], _symbol: String[32], _version: String[32], _fee_collector: address):
+def __init__(token_addr: address, _name: String[64], _symbol: String[32], _version: String[32], _fee_collector: address, _fee_percent: uint256):
     """
     @notice Contract constructor
     @param token_addr `ERC20CRV` token address
@@ -136,6 +140,7 @@ def __init__(token_addr: address, _name: String[64], _symbol: String[32], _versi
     self.symbol = _symbol
     self.version = _version
     self.fee_collector = _fee_collector
+    self.fee_percent = _fee_percent
 
 
 @external
@@ -497,9 +502,14 @@ def withdraw():
     # Both can have >= 0 amount
     self._checkpoint(msg.sender, old_locked, _locked)
 
-    assert ERC20(self.token).transfer(msg.sender, value)
+    performanceFee: uint256 = (value * self.fee_percent) / MULTIPLIER
+    withdrawAmount: uint256 = value - performanceFee
 
-    log Withdraw(msg.sender, value, block.timestamp)
+    assert ERC20(self.token).transfer(self.fee_collector, performanceFee)
+    assert ERC20(self.token).transfer(msg.sender, withdrawAmount)
+
+    log PerformanceFeeCollected(performanceFee)
+    log Withdraw(msg.sender, withdrawAmount, block.timestamp)
     log Supply(supply_before, supply_before - value)
 
 
