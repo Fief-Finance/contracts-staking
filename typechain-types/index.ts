@@ -25,6 +25,7 @@ export type { ERC165 } from "./ERC165";
 export type { IERC165 } from "./IERC165";
 export type { ERC20Mock } from "./ERC20Mock";
 export type { ERC721Mock } from "./ERC721Mock";
+export type { SFIEF } from "./SFIEF";
 
 export { AccessControl__factory } from "./factories/AccessControl__factory";
 export { AccessControlEnumerable__factory } from "./factories/AccessControlEnumerable__factory";
@@ -50,3 +51,4 @@ export { ERC165__factory } from "./factories/ERC165__factory";
 export { IERC165__factory } from "./factories/IERC165__factory";
 export { ERC20Mock__factory } from "./factories/ERC20Mock__factory";
 export { ERC721Mock__factory } from "./factories/ERC721Mock__factory";
+export { SFIEF__factory } from "./factories/SFIEF__factory";

@@ -108,6 +108,10 @@ declare module "hardhat/types/runtime" {
       name: "ERC721Mock",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ERC721Mock__factory>;
+    getContractFactory(
+      name: "SFIEF",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.SFIEF__factory>;
 
     getContractAt(
       name: "AccessControl",
@@ -229,6 +233,11 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.ERC721Mock>;
+    getContractAt(
+      name: "SFIEF",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.SFIEF>;
 
     // default types
     getContractFactory(
