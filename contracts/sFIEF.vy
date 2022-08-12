@@ -106,7 +106,6 @@ fee_percent: public(uint256) # scaled up by multiplier
 
 name: public(String[64])
 symbol: public(String[32])
-version: public(String[32])
 decimals: public(uint256)
 
 # Checker for whitelisted (smart contract) wallets which are allowed to deposit
@@ -119,13 +118,15 @@ future_admin: public(address)
 
 
 @external
-def __init__(token_addr: address, _name: String[64], _symbol: String[32], _version: String[32], _fee_collector: address, _fee_percent: uint256):
+def __init__(token_addr: address, _name: String[64], _symbol: String[32], _fee_collector: address, _fee_percent: uint256):
     """
     @notice Contract constructor
     @param token_addr `ERC20CRV` token address
     @param _name Token name
     @param _symbol Token symbol
-    @param _version Contract version - required for Aragon compatibility
+    @param _fee_collector Fee collector address
+    @param _fee_percent Performance fee percent
+    
     """
     self.admin = msg.sender
     self.token = token_addr
@@ -138,7 +139,6 @@ def __init__(token_addr: address, _name: String[64], _symbol: String[32], _versi
 
     self.name = _name
     self.symbol = _symbol
-    self.version = _version
     self.fee_collector = _fee_collector
     self.fee_percent = _fee_percent
 

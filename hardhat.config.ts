@@ -59,7 +59,7 @@ const config: HardhatUserConfig = {
         },
         rinkeby: {
             url: `https://rinkeby.infura.io/v3/${infuraApiKey}`,
-            gasPrice: 2000000000, // 1 Gwei
+            gasPrice: 30000000000, // 1 Gwei
             chainId: 4,
             accounts: accountPrivateKeys,
         },
@@ -67,6 +67,12 @@ const config: HardhatUserConfig = {
             url: `https://mainnet.infura.io/v3/${infuraApiKey}`,
             gasPrice: 30000000000, // 30 Gwei
             chainId: 1,
+            accounts: accountPrivateKeys,
+        },
+        goerli: {
+            url: `https://goerli.infura.io/v3/${infuraApiKey}`,
+            gasPrice: 30000000000, // 1 Gwei
+            chainId: 5,
             accounts: accountPrivateKeys,
         },
         coverage: {

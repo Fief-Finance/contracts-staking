@@ -50,7 +50,6 @@ export interface SFIEFInterface extends utils.Interface {
     "fee_percent()": FunctionFragment;
     "name()": FunctionFragment;
     "symbol()": FunctionFragment;
-    "version()": FunctionFragment;
     "decimals()": FunctionFragment;
     "future_smart_wallet_checker()": FunctionFragment;
     "smart_wallet_checker()": FunctionFragment;
@@ -151,7 +150,6 @@ export interface SFIEFInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
-  encodeFunctionData(functionFragment: "version", values?: undefined): string;
   encodeFunctionData(functionFragment: "decimals", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "future_smart_wallet_checker",
@@ -260,7 +258,6 @@ export interface SFIEFInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "version", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "decimals", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "future_smart_wallet_checker",
@@ -523,8 +520,6 @@ export interface SFIEF extends BaseContract {
 
     symbol(overrides?: CallOverrides): Promise<[string]>;
 
-    version(overrides?: CallOverrides): Promise<[string]>;
-
     decimals(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     future_smart_wallet_checker(overrides?: CallOverrides): Promise<[string]>;
@@ -682,8 +677,6 @@ export interface SFIEF extends BaseContract {
 
   symbol(overrides?: CallOverrides): Promise<string>;
 
-  version(overrides?: CallOverrides): Promise<string>;
-
   decimals(overrides?: CallOverrides): Promise<BigNumber>;
 
   future_smart_wallet_checker(overrides?: CallOverrides): Promise<string>;
@@ -835,8 +828,6 @@ export interface SFIEF extends BaseContract {
     name(overrides?: CallOverrides): Promise<string>;
 
     symbol(overrides?: CallOverrides): Promise<string>;
-
-    version(overrides?: CallOverrides): Promise<string>;
 
     decimals(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1032,8 +1023,6 @@ export interface SFIEF extends BaseContract {
 
     symbol(overrides?: CallOverrides): Promise<BigNumber>;
 
-    version(overrides?: CallOverrides): Promise<BigNumber>;
-
     decimals(overrides?: CallOverrides): Promise<BigNumber>;
 
     future_smart_wallet_checker(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1183,8 +1172,6 @@ export interface SFIEF extends BaseContract {
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    version(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     decimals(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
