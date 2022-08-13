@@ -83,6 +83,9 @@ event Supply:
 event UpdateFeeCollector:
     newFeeCollector: address
 
+event UpdateFeePercent:
+    percent: uint256
+
 event PerformanceFeeCollected:
     amount: uint256
 
@@ -163,6 +166,16 @@ def update_fee_collector(addr: address):
     assert msg.sender == self.admin  # dev: admin only
     self.fee_collector = addr
     log UpdateFeeCollector(addr)
+
+@external
+def update_fee_percent(percent: uint256):
+    """
+    @notice Updates the performance fee percent to `percent`
+    @param percent New fee percent scaled up by multiplier
+    """
+    assert msg.sender == self.admin  # dev: admin only
+    self.fee_percent = percent
+    log UpdateFeePercent(percent)
 
 
 @external
