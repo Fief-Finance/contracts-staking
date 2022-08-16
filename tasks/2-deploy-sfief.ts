@@ -6,7 +6,7 @@ import {HardhatRuntimeEnvironment} from "hardhat/types";
 import {SFIEF} from "../typechain-types/SFIEF";
 
 /*
-    npx hardhat deploy-sfief --network goerli --token-address 0x26FE8a8f86511d678d031a022E48FfF41c6a3e3b --name StakedFIEF --symbol sFIEF --fee-collector 0x0000000000000000000000000000000000000000 --fee-percent 0 --exec-tx true
+    npx hardhat deploy-sfief --network localhost --token-address 0x5FbDB2315678afecb367f032d93F642f64180aa3 --name StakedFIEF --symbol sFIEF --fee-collector 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266 --fee-percent 0 --exec-tx true
 */
 task("deploy-sfief", "Deploys sFIEF Smart contract")
     .addParam(
