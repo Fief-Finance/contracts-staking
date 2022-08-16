@@ -71,7 +71,7 @@ const config: HardhatUserConfig = {
         },
         goerli: {
             url: `https://goerli.infura.io/v3/${infuraApiKey}`,
-            gasPrice: 30000000000, // 1 Gwei
+            gasPrice: 30000000000, // 30 Gwei
             chainId: 5,
             accounts: accountPrivateKeys,
         },

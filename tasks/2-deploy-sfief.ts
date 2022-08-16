@@ -6,24 +6,29 @@ import {HardhatRuntimeEnvironment} from "hardhat/types";
 import {SFIEF} from "../typechain-types/SFIEF";
 
 /*
-    yarn 2-deploy-sfief:rinkeby --tokenAddress 0xeA068Fba19CE95f12d252aD8Cb2939225C4Ea02D --name "Staked FIEF" --symbol sFIEF --feeCollector 0xeA068Fba19CE95f12d252aD8Cb2939225C4Ea02D --feePercent 500000000000000000 --exec-tx false
+    npx hardhat deploy-sfief --network goerli --token-address 0x26FE8a8f86511d678d031a022E48FfF41c6a3e3b --name StakedFIEF --symbol sFIEF --fee-collector 0x0000000000000000000000000000000000000000 --fee-percent 0 --exec-tx true
 */
-task("2-deploy-sfief", "Deploys sFIEF Smart contract")
-    .addParam("tokenaddress", "FIEF token address", "", types.string)
+task("deploy-sfief", "Deploys sFIEF Smart contract")
+    .addParam(
+        "tokenAddress",
+        "FIEF token address",
+        "0x26FE8a8f86511d678d031a022E48FfF41c6a3e3b", // Test token on goerli
+        types.string
+    )
     .addParam("name", "Token name", "Staked FIEF", types.string)
     .addParam("symbol", "Token symbol", "sFIEF", types.string)
-    .addParam("feecollector", "Address performace fee is sent to", "", types.string)
-    .addParam("feepercent", "Performace fee percent", 0, types.int)
+    .addParam("feeCollector", "Address performace fee is sent to", "", types.string)
+    .addParam("feePercent", "Performace fee percent", 500000, types.int)
     .addParam("execTx", "True to execute the transaction. Otherwise false.", false, types.boolean)
     .setAction(async (taskArgs, env: HardhatRuntimeEnvironment) => {
-        const {tokenaddress, name, symbol, feecollector, feepercent, execTx} = taskArgs;
+        const {tokenAddress, name, symbol, feeCollector, feePercent, execTx} = taskArgs;
         const {ethers} = env;
         const signers = await ethers.getSigners();
         const executor = signers[0];
 
         console.log(`Executor Address (# index):    ${executor.address}`);
         console.log(
-            `Name / Symbol / FeeCollector / FeePercent / FIEF Address:      ${name} / ${symbol} / ${feecollector} / ${feepercent} / ${tokenaddress}`
+            `Name / Symbol / FeeCollector / FeePercent / FIEF Address:      ${name} / ${symbol} / ${feeCollector} / ${feePercent} / ${tokenAddress}`
         );
         console.log(`Execute TX?:                   ${execTx}`);
         if (!execTx) {
@@ -33,15 +38,15 @@ task("2-deploy-sfief", "Deploys sFIEF Smart contract")
 
         const tokenFactory = await ethers.getContractFactory("sFIEF");
         const sFIEFToken = (await tokenFactory.deploy(
-            tokenaddress,
+            tokenAddress,
             name,
             symbol,
-            feecollector,
-            feepercent
+            feeCollector,
+            feePercent
         )) as SFIEF;
 
         console.log(
-            `npx hardhat verify ${sFIEFToken.address} --network ${env.network.name} ${tokenaddress} "${name}" "${symbol}" "${feecollector}" "${feepercent}"`
+            `npx hardhat verify ${sFIEFToken.address} --network ${env.network.name} ${tokenAddress} "${name}" "${symbol}" "${feeCollector}" "${feePercent}"`
         );
     });
 module.exports = {};
