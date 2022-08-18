@@ -145,7 +145,7 @@ describe("Staked FIEF", function () {
         ];
 
         testCases.forEach(function (testCase) {
-            it.only(`Should receive ${testCase.expectedWithdrawalAmount} $FIEF when withdrawing after lock has expired`, async function () {
+            it(`Should receive ${testCase.expectedWithdrawalAmount} $FIEF when withdrawing after lock has expired`, async function () {
                 // Get block time now plus lock year to uint
                 const lastBlock = await ethers.provider.getBlock("latest");
                 const lockDuration = testCase.lockDuration.add(lastBlock.timestamp);
