@@ -6,7 +6,7 @@ import {HardhatRuntimeEnvironment} from "hardhat/types";
 import {FeeDistributor} from "../typechain-types";
 
 /*
-    npx hardhat deploy-distributor --network goerli --vetoken 0x0000000000000000000000000000000000000000 --starttime 8412154 --distributiontoken 0x0000000000000000000000000000000000000000 --admin 0x0000000000000000000000000000000000000000 --feepercent 1234567 --exec-tx false
+    npx hardhat deploy-distributor --network ropsten --vetoken 0xA1a6f77436975de137aF90853D922c6Acfb1885B --starttime 8412154 --distributiontoken 0x7AEc85F0a47E018E6d0ac1FE05349c5124f6823F --admin 0x0fB20862cF5fA9e07db54C711DB272A4e2a4554E --emergency-return 0x0fB20862cF5fA9e07db54C711DB272A4e2a4554E --exec-tx true
 */
 task("deploy-distributor", "Deploys the fee distributor smart contract")
     .addParam(

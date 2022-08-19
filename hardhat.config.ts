@@ -75,6 +75,12 @@ const config: HardhatUserConfig = {
             chainId: 5,
             accounts: accountPrivateKeys,
         },
+        ropsten: {
+            url: `https://ropsten.infura.io/v3/${infuraApiKey}`,
+            gasPrice: 30000000000, // 30 Gwei
+            chainId: 3,
+            accounts: accountPrivateKeys,
+        },
         coverage: {
             url: "http://localhost:8555",
         },
@@ -91,6 +97,7 @@ const config: HardhatUserConfig = {
             rinkeby: explorerApiKey,
             avalanche: explorerApiKey,
             avalancheFujiTestnet: explorerApiKey,
+            ropsten: explorerApiKey,
         },
     },
 };
