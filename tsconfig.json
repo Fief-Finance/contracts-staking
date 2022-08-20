@@ -9,15 +9,9 @@
     "declaration": true,
     "noImplicitAny": true,
     "resolveJsonModule": true,
-    "typeRoots": [
-      "./node_modules/@types",
-      "./types"
-    ]
+    "typeRoots": ["./node_modules/@types", "./types"]
   },
-  "include": ["./scripts", "./test"],
+  "include": ["./scripts", "./test", "./tasks"],
   "exclude": ["./node_modules", "./types"],
-  "files": [
-    "./hardhat.config.ts"
-  ],
-
+  "files": ["./hardhat.config.ts"]
 }
