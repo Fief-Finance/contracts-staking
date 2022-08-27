@@ -21,8 +21,6 @@ export interface SFIEFInterface extends utils.Interface {
   contractName: "SFIEF";
   functions: {
     "commit_transfer_ownership(address)": FunctionFragment;
-    "update_fee_collector(address)": FunctionFragment;
-    "update_fee_percent(uint256)": FunctionFragment;
     "apply_transfer_ownership()": FunctionFragment;
     "commit_smart_wallet_checker(address)": FunctionFragment;
     "apply_smart_wallet_checker()": FunctionFragment;
@@ -47,8 +45,6 @@ export interface SFIEFInterface extends utils.Interface {
     "user_point_history(address,uint256)": FunctionFragment;
     "user_point_epoch(address)": FunctionFragment;
     "slope_changes(uint256)": FunctionFragment;
-    "fee_collector()": FunctionFragment;
-    "fee_percent()": FunctionFragment;
     "name()": FunctionFragment;
     "symbol()": FunctionFragment;
     "decimals()": FunctionFragment;
@@ -61,14 +57,6 @@ export interface SFIEFInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "commit_transfer_ownership",
     values: [string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "update_fee_collector",
-    values: [string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "update_fee_percent",
-    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "apply_transfer_ownership",
@@ -145,14 +133,6 @@ export interface SFIEFInterface extends utils.Interface {
     functionFragment: "slope_changes",
     values: [BigNumberish]
   ): string;
-  encodeFunctionData(
-    functionFragment: "fee_collector",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "fee_percent",
-    values?: undefined
-  ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
   encodeFunctionData(functionFragment: "decimals", values?: undefined): string;
@@ -172,14 +152,6 @@ export interface SFIEFInterface extends utils.Interface {
 
   decodeFunctionResult(
     functionFragment: "commit_transfer_ownership",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "update_fee_collector",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "update_fee_percent",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -257,14 +229,6 @@ export interface SFIEFInterface extends utils.Interface {
     functionFragment: "slope_changes",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "fee_collector",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "fee_percent",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "decimals", data: BytesLike): Result;
@@ -288,9 +252,6 @@ export interface SFIEFInterface extends utils.Interface {
     "Deposit(address,uint256,uint256,int128,uint256)": EventFragment;
     "Withdraw(address,uint256,uint256)": EventFragment;
     "Supply(uint256,uint256)": EventFragment;
-    "UpdateFeeCollector(address)": EventFragment;
-    "UpdateFeePercent(uint256)": EventFragment;
-    "PerformanceFeeCollected(uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "CommitOwnership"): EventFragment;
@@ -298,9 +259,6 @@ export interface SFIEFInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: "Deposit"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Withdraw"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Supply"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "UpdateFeeCollector"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "UpdateFeePercent"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "PerformanceFeeCollected"): EventFragment;
 }
 
 export type CommitOwnershipEvent = TypedEvent<[string], { admin: string }>;
@@ -338,30 +296,6 @@ export type SupplyEvent = TypedEvent<
 
 export type SupplyEventFilter = TypedEventFilter<SupplyEvent>;
 
-export type UpdateFeeCollectorEvent = TypedEvent<
-  [string],
-  { newFeeCollector: string }
->;
-
-export type UpdateFeeCollectorEventFilter =
-  TypedEventFilter<UpdateFeeCollectorEvent>;
-
-export type UpdateFeePercentEvent = TypedEvent<
-  [BigNumber],
-  { percent: BigNumber }
->;
-
-export type UpdateFeePercentEventFilter =
-  TypedEventFilter<UpdateFeePercentEvent>;
-
-export type PerformanceFeeCollectedEvent = TypedEvent<
-  [BigNumber],
-  { amount: BigNumber }
->;
-
-export type PerformanceFeeCollectedEventFilter =
-  TypedEventFilter<PerformanceFeeCollectedEvent>;
-
 export interface SFIEF extends BaseContract {
   contractName: "SFIEF";
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -392,16 +326,6 @@ export interface SFIEF extends BaseContract {
   functions: {
     commit_transfer_ownership(
       addr: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    update_fee_collector(
-      addr: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    update_fee_percent(
-      percent: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -536,10 +460,6 @@ export interface SFIEF extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
-    fee_collector(overrides?: CallOverrides): Promise<[string]>;
-
-    fee_percent(overrides?: CallOverrides): Promise<[BigNumber]>;
-
     name(overrides?: CallOverrides): Promise<[string]>;
 
     symbol(overrides?: CallOverrides): Promise<[string]>;
@@ -557,16 +477,6 @@ export interface SFIEF extends BaseContract {
 
   commit_transfer_ownership(
     addr: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  update_fee_collector(
-    addr: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  update_fee_percent(
-    percent: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -698,10 +608,6 @@ export interface SFIEF extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  fee_collector(overrides?: CallOverrides): Promise<string>;
-
-  fee_percent(overrides?: CallOverrides): Promise<BigNumber>;
-
   name(overrides?: CallOverrides): Promise<string>;
 
   symbol(overrides?: CallOverrides): Promise<string>;
@@ -719,16 +625,6 @@ export interface SFIEF extends BaseContract {
   callStatic: {
     commit_transfer_ownership(
       addr: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    update_fee_collector(
-      addr: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    update_fee_percent(
-      percent: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -855,10 +751,6 @@ export interface SFIEF extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    fee_collector(overrides?: CallOverrides): Promise<string>;
-
-    fee_percent(overrides?: CallOverrides): Promise<BigNumber>;
-
     name(overrides?: CallOverrides): Promise<string>;
 
     symbol(overrides?: CallOverrides): Promise<string>;
@@ -912,34 +804,11 @@ export interface SFIEF extends BaseContract {
       supply?: null
     ): SupplyEventFilter;
     Supply(prevSupply?: null, supply?: null): SupplyEventFilter;
-
-    "UpdateFeeCollector(address)"(
-      newFeeCollector?: null
-    ): UpdateFeeCollectorEventFilter;
-    UpdateFeeCollector(newFeeCollector?: null): UpdateFeeCollectorEventFilter;
-
-    "UpdateFeePercent(uint256)"(percent?: null): UpdateFeePercentEventFilter;
-    UpdateFeePercent(percent?: null): UpdateFeePercentEventFilter;
-
-    "PerformanceFeeCollected(uint256)"(
-      amount?: null
-    ): PerformanceFeeCollectedEventFilter;
-    PerformanceFeeCollected(amount?: null): PerformanceFeeCollectedEventFilter;
   };
 
   estimateGas: {
     commit_transfer_ownership(
       addr: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    update_fee_collector(
-      addr: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    update_fee_percent(
-      percent: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1057,10 +926,6 @@ export interface SFIEF extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    fee_collector(overrides?: CallOverrides): Promise<BigNumber>;
-
-    fee_percent(overrides?: CallOverrides): Promise<BigNumber>;
-
     name(overrides?: CallOverrides): Promise<BigNumber>;
 
     symbol(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1079,16 +944,6 @@ export interface SFIEF extends BaseContract {
   populateTransaction: {
     commit_transfer_ownership(
       addr: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    update_fee_collector(
-      addr: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    update_fee_percent(
-      percent: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1211,10 +1066,6 @@ export interface SFIEF extends BaseContract {
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
-
-    fee_collector(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    fee_percent(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

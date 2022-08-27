@@ -80,14 +80,6 @@ event Supply:
     prevSupply: uint256
     supply: uint256
 
-event UpdateFeeCollector:
-    newFeeCollector: address
-
-event UpdateFeePercent:
-    percent: uint256
-
-event PerformanceFeeCollected:
-    amount: uint256
 
 WEEK: constant(uint256) = 7 * 86400  # all future times are rounded by week
 MAXTIME: constant(uint256) = 2 * 365 * 86400  # 2 years
@@ -103,9 +95,6 @@ point_history: public(Point[100000000000000000000000000000])  # epoch -> unsigne
 user_point_history: public(HashMap[address, Point[1000000000]])  # user -> Point[user_epoch]
 user_point_epoch: public(HashMap[address, uint256])
 slope_changes: public(HashMap[uint256, int128])  # time -> signed slope change
- 
-fee_collector: public(address)
-fee_percent: public(uint256) # scaled up by multiplier 
 
 name: public(String[64])
 symbol: public(String[32])
@@ -121,14 +110,12 @@ future_admin: public(address)
 
 
 @external
-def __init__(token_addr: address, _name: String[64], _symbol: String[32], _fee_collector: address, _fee_percent: uint256):
+def __init__(token_addr: address, _name: String[64], _symbol: String[32]):
     """
     @notice Contract constructor
     @param token_addr `ERC20CRV` token address
     @param _name Token name
     @param _symbol Token symbol
-    @param _fee_collector Fee collector address
-    @param _fee_percent Performance fee percent
     
     """
     self.admin = msg.sender
@@ -142,8 +129,6 @@ def __init__(token_addr: address, _name: String[64], _symbol: String[32], _fee_c
 
     self.name = _name
     self.symbol = _symbol
-    self.fee_collector = _fee_collector
-    self.fee_percent = _fee_percent
 
 
 @external
@@ -155,27 +140,6 @@ def commit_transfer_ownership(addr: address):
     assert msg.sender == self.admin  # dev: admin only
     self.future_admin = addr
     log CommitOwnership(addr)
-
-
-@external
-def update_fee_collector(addr: address):
-    """
-    @notice Updates address of fee collector to `addr`
-    @param addr Address to use as fee collector
-    """
-    assert msg.sender == self.admin  # dev: admin only
-    self.fee_collector = addr
-    log UpdateFeeCollector(addr)
-
-@external
-def update_fee_percent(percent: uint256):
-    """
-    @notice Updates the performance fee percent to `percent`
-    @param percent New fee percent scaled up by multiplier
-    """
-    assert msg.sender == self.admin  # dev: admin only
-    self.fee_percent = percent
-    log UpdateFeePercent(percent)
 
 
 @external
@@ -515,14 +479,10 @@ def withdraw():
     # Both can have >= 0 amount
     self._checkpoint(msg.sender, old_locked, _locked)
 
-    performanceFee: uint256 = (value * self.fee_percent) / MULTIPLIER
-    withdrawAmount: uint256 = value - performanceFee
 
-    assert ERC20(self.token).transfer(self.fee_collector, performanceFee)
-    assert ERC20(self.token).transfer(msg.sender, withdrawAmount)
+    assert ERC20(self.token).transfer(msg.sender, value)
 
-    log PerformanceFeeCollected(performanceFee)
-    log Withdraw(msg.sender, withdrawAmount, block.timestamp)
+    log Withdraw(msg.sender, value, block.timestamp)
     log Supply(supply_before, supply_before - value)
 
 
