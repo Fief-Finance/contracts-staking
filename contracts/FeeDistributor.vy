@@ -35,6 +35,11 @@ event Claimed:
     claim_epoch: uint256
     max_epoch: uint256
 
+event UpdateFeeCollector:
+    newFeeCollector: address
+
+event UpdateFeePercent:
+    percent: uint256
 
 struct Point:
     bias: int128
@@ -45,6 +50,7 @@ struct Point:
 
 WEEK: constant(uint256) = 7 * 86400
 TOKEN_CHECKPOINT_DEADLINE: constant(uint256) = 86400
+MULTIPLIER: constant(uint256) = 10 ** 18
 
 start_time: public(uint256)
 time_cursor: public(uint256)
@@ -67,6 +73,8 @@ can_checkpoint_token: public(bool)
 emergency_return: public(address)
 is_killed: public(bool)
 
+fee_collector: public(address)
+fee_percent: public(uint256)
 
 @external
 def __init__(
@@ -74,7 +82,9 @@ def __init__(
     _start_time: uint256,
     _token: address,
     _admin: address,
-    _emergency_return: address
+    _emergency_return: address,
+    _fee_percent: uint256,
+    _fee_collector: address,
 ):
     """
     @notice Contract constructor
@@ -84,6 +94,8 @@ def __init__(
     @param _admin Admin address
     @param _emergency_return Address to transfer `_token` balance to
                              if this contract is killed
+    @param _fee_percent Performance fee percent
+    @param _fee_collector Fee collector address
     """
     t: uint256 = _start_time / WEEK * WEEK
     self.start_time = t
@@ -93,6 +105,8 @@ def __init__(
     self.voting_escrow = _voting_escrow
     self.admin = _admin
     self.emergency_return = _emergency_return
+    self.fee_percent = _fee_percent
+    self.fee_collector = _fee_collector
 
 
 @internal
@@ -321,8 +335,11 @@ def claim(_addr: address = msg.sender) -> uint256:
 
     amount: uint256 = self._claim(_addr, self.voting_escrow, last_token_time)
     if amount != 0:
+        performanceFee: uint256 = (amount * self.fee_percent) / MULTIPLIER
+        claimAmount: uint256 = amount - performanceFee
         token: address = self.token
-        assert ERC20(token).transfer(_addr, amount)
+        assert ERC20(token).transfer(_addr, claimAmount)
+        assert ERC20(token).transfer(self.fee_collector, performanceFee)
         self.token_last_balance -= amount
 
     return amount
@@ -361,8 +378,13 @@ def claim_many(_receivers: address[20]) -> bool:
             break
 
         amount: uint256 = self._claim(addr, voting_escrow, last_token_time)
+
         if amount != 0:
-            assert ERC20(token).transfer(addr, amount)
+            performanceFee: uint256 = (amount * self.fee_percent) / MULTIPLIER
+            claimAmount: uint256 = amount - performanceFee
+
+            assert ERC20(token).transfer(self.fee_collector, performanceFee)
+            assert ERC20(token).transfer(addr, claimAmount)
             total += amount
 
     if total != 0:
@@ -464,3 +486,24 @@ def recover_balance(_coin: address) -> bool:
         assert convert(response, bool)
 
     return True
+
+@external
+def update_fee_percent(percent: uint256):
+    """
+    @notice Updates the performance fee percent to `percent`
+    @param percent New fee percent
+    """
+    assert msg.sender == self.admin  # dev: admin only
+    self.fee_percent = percent
+    log UpdateFeePercent(percent)
+
+@external
+def update_fee_collector(addr: address):
+    """
+    @notice Updates address of fee collector to `addr`
+    @param addr Address to use as fee collector
+    """
+    assert msg.sender == self.admin  # dev: admin only
+    self.fee_collector = addr
+    log UpdateFeeCollector(addr)
+    

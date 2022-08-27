@@ -31,6 +31,8 @@ export interface FeeDistributorInterface extends utils.Interface {
     "toggle_allow_checkpoint_token()": FunctionFragment;
     "kill_me()": FunctionFragment;
     "recover_balance(address)": FunctionFragment;
+    "update_fee_percent(uint256)": FunctionFragment;
+    "update_fee_collector(address)": FunctionFragment;
     "start_time()": FunctionFragment;
     "time_cursor()": FunctionFragment;
     "time_cursor_of(address)": FunctionFragment;
@@ -47,6 +49,8 @@ export interface FeeDistributorInterface extends utils.Interface {
     "can_checkpoint_token()": FunctionFragment;
     "emergency_return()": FunctionFragment;
     "is_killed()": FunctionFragment;
+    "fee_collector()": FunctionFragment;
+    "fee_percent()": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -82,6 +86,14 @@ export interface FeeDistributorInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "kill_me", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "recover_balance",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "update_fee_percent",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "update_fee_collector",
     values: [string]
   ): string;
   encodeFunctionData(
@@ -139,6 +151,14 @@ export interface FeeDistributorInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "is_killed", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "fee_collector",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "fee_percent",
+    values?: undefined
+  ): string;
 
   decodeFunctionResult(
     functionFragment: "checkpoint_token",
@@ -167,6 +187,14 @@ export interface FeeDistributorInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "kill_me", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "recover_balance",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "update_fee_percent",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "update_fee_collector",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "start_time", data: BytesLike): Result;
@@ -218,6 +246,14 @@ export interface FeeDistributorInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "is_killed", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "fee_collector",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "fee_percent",
+    data: BytesLike
+  ): Result;
 
   events: {
     "CommitAdmin(address)": EventFragment;
@@ -225,6 +261,8 @@ export interface FeeDistributorInterface extends utils.Interface {
     "ToggleAllowCheckpointToken(bool)": EventFragment;
     "CheckpointToken(uint256,uint256)": EventFragment;
     "Claimed(address,uint256,uint256,uint256)": EventFragment;
+    "UpdateFeeCollector(address)": EventFragment;
+    "UpdateFeePercent(uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "CommitAdmin"): EventFragment;
@@ -232,6 +270,8 @@ export interface FeeDistributorInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: "ToggleAllowCheckpointToken"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "CheckpointToken"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Claimed"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "UpdateFeeCollector"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "UpdateFeePercent"): EventFragment;
 }
 
 export type CommitAdminEvent = TypedEvent<[string], { admin: string }>;
@@ -268,6 +308,22 @@ export type ClaimedEvent = TypedEvent<
 >;
 
 export type ClaimedEventFilter = TypedEventFilter<ClaimedEvent>;
+
+export type UpdateFeeCollectorEvent = TypedEvent<
+  [string],
+  { newFeeCollector: string }
+>;
+
+export type UpdateFeeCollectorEventFilter =
+  TypedEventFilter<UpdateFeeCollectorEvent>;
+
+export type UpdateFeePercentEvent = TypedEvent<
+  [BigNumber],
+  { percent: BigNumber }
+>;
+
+export type UpdateFeePercentEventFilter =
+  TypedEventFilter<UpdateFeePercentEvent>;
 
 export interface FeeDistributor extends BaseContract {
   contractName: "FeeDistributor";
@@ -352,6 +408,16 @@ export interface FeeDistributor extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    update_fee_percent(
+      percent: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    update_fee_collector(
+      addr: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     start_time(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     time_cursor(overrides?: CallOverrides): Promise<[BigNumber]>;
@@ -395,6 +461,10 @@ export interface FeeDistributor extends BaseContract {
     emergency_return(overrides?: CallOverrides): Promise<[string]>;
 
     is_killed(overrides?: CallOverrides): Promise<[boolean]>;
+
+    fee_collector(overrides?: CallOverrides): Promise<[string]>;
+
+    fee_percent(overrides?: CallOverrides): Promise<[BigNumber]>;
   };
 
   checkpoint_token(
@@ -452,6 +522,16 @@ export interface FeeDistributor extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  update_fee_percent(
+    percent: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  update_fee_collector(
+    addr: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   start_time(overrides?: CallOverrides): Promise<BigNumber>;
 
   time_cursor(overrides?: CallOverrides): Promise<BigNumber>;
@@ -487,6 +567,10 @@ export interface FeeDistributor extends BaseContract {
 
   is_killed(overrides?: CallOverrides): Promise<boolean>;
 
+  fee_collector(overrides?: CallOverrides): Promise<string>;
+
+  fee_percent(overrides?: CallOverrides): Promise<BigNumber>;
+
   callStatic: {
     checkpoint_token(overrides?: CallOverrides): Promise<void>;
 
@@ -521,6 +605,16 @@ export interface FeeDistributor extends BaseContract {
     kill_me(overrides?: CallOverrides): Promise<void>;
 
     recover_balance(_coin: string, overrides?: CallOverrides): Promise<boolean>;
+
+    update_fee_percent(
+      percent: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    update_fee_collector(
+      addr: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     start_time(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -559,6 +653,10 @@ export interface FeeDistributor extends BaseContract {
     emergency_return(overrides?: CallOverrides): Promise<string>;
 
     is_killed(overrides?: CallOverrides): Promise<boolean>;
+
+    fee_collector(overrides?: CallOverrides): Promise<string>;
+
+    fee_percent(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   filters: {
@@ -593,6 +691,14 @@ export interface FeeDistributor extends BaseContract {
       claim_epoch?: null,
       max_epoch?: null
     ): ClaimedEventFilter;
+
+    "UpdateFeeCollector(address)"(
+      newFeeCollector?: null
+    ): UpdateFeeCollectorEventFilter;
+    UpdateFeeCollector(newFeeCollector?: null): UpdateFeeCollectorEventFilter;
+
+    "UpdateFeePercent(uint256)"(percent?: null): UpdateFeePercentEventFilter;
+    UpdateFeePercent(percent?: null): UpdateFeePercentEventFilter;
   };
 
   estimateGas: {
@@ -651,6 +757,16 @@ export interface FeeDistributor extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    update_fee_percent(
+      percent: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    update_fee_collector(
+      addr: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     start_time(overrides?: CallOverrides): Promise<BigNumber>;
 
     time_cursor(overrides?: CallOverrides): Promise<BigNumber>;
@@ -688,6 +804,10 @@ export interface FeeDistributor extends BaseContract {
     emergency_return(overrides?: CallOverrides): Promise<BigNumber>;
 
     is_killed(overrides?: CallOverrides): Promise<BigNumber>;
+
+    fee_collector(overrides?: CallOverrides): Promise<BigNumber>;
+
+    fee_percent(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -746,6 +866,16 @@ export interface FeeDistributor extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    update_fee_percent(
+      percent: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    update_fee_collector(
+      addr: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     start_time(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     time_cursor(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -793,5 +923,9 @@ export interface FeeDistributor extends BaseContract {
     emergency_return(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     is_killed(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    fee_collector(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    fee_percent(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }

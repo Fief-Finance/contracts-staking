@@ -28,13 +28,7 @@ describe("Staked FIEF", function () {
 
         // Deploy sFIEF
         const sFiefFactory = await ethers.getContractFactory("sFIEF");
-        sFIEF = (await sFiefFactory.deploy(
-            FIEFMock.address,
-            "Staked FIEF",
-            "FIEF",
-            feeCollector.address,
-            performanceFee
-        )) as SFIEF;
+        sFIEF = (await sFiefFactory.deploy(FIEFMock.address, "Staked FIEF", "FIEF")) as SFIEF;
         await sFIEF.deployed();
         // console.log(`sFIEF deployed at: ${sFIEF.address}`);
 
