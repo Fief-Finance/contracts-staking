@@ -65,7 +65,7 @@ const config: HardhatUserConfig = {
         },
         ethereum: {
             url: `https://mainnet.infura.io/v3/${infuraApiKey}`,
-            gasPrice: 30000000000, // 30 Gwei
+            gasPrice: 25000000000, // 30 Gwei
             chainId: 1,
             accounts: accountPrivateKeys,
         },
@@ -98,6 +98,7 @@ const config: HardhatUserConfig = {
             avalanche: explorerApiKey,
             avalancheFujiTestnet: explorerApiKey,
             ropsten: explorerApiKey,
+            goerli: explorerApiKey,
         },
     },
 };

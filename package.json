@@ -64,10 +64,12 @@
     "format:sol": "prettier --write 'contracts/**/*.sol'",
     "format:ts": "prettier --write '{scripts,src,tasks,test}/**/*.ts'",
     "format": "yarn format:sol && yarn format:ts",
-    "1-deploy-mock-token:fuji": "npx hardhat 1-deploy-mock-token --network fuji",
-    "1-deploy-mock-token:rinkeby": "npx hardhat 1-deploy-mock-token --network rinkeby",
-    "1-deploy-mock-token:avax": "npx hardhat 1-deploy-mock-token --network avax",
-    "1-deploy-mock-token:ethereum": "npx hardhat 1-deploy-mock-token --network ethereum"
+    "1-deploy-mock-token:goerli": "npx hardhat 1-deploy-mock-token --network goerli",
+    "2-deploy-sfief:goerli": "npx hardhat deploy-sfief --network goerli",
+    "3-deploy-distributor:goerli": "npx hardhat deploy-distributor --network goerli",
+    "1-deploy-mock-token:ethereum": "npx hardhat 1-deploy-mock-token --network ethereum",
+    "2-deploy-sfief:ethereum": "npx hardhat deploy-sfief --network ethereum",
+    "3-deploy-distributor:ethereum": "npx hardhat deploy-distributor --network ethereum"
   },
   "repository": {
     "type": "git",
