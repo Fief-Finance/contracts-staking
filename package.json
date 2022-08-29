@@ -67,9 +67,13 @@
     "1-deploy-mock-token:goerli": "npx hardhat 1-deploy-mock-token --network goerli",
     "2-deploy-sfief:goerli": "npx hardhat deploy-sfief --network goerli",
     "3-deploy-distributor:goerli": "npx hardhat deploy-distributor --network goerli",
+    "4-sfief-checkpoint:goerli": "npx hardhat 4-sfief-checkpoint --network goerli",
+    "5-fee-distributor-checkpoint-token:goerli": "npx hardhat 5-fee-distributor-checkpoint-token --network goerli",
     "1-deploy-mock-token:ethereum": "npx hardhat 1-deploy-mock-token --network ethereum",
     "2-deploy-sfief:ethereum": "npx hardhat deploy-sfief --network ethereum",
-    "3-deploy-distributor:ethereum": "npx hardhat deploy-distributor --network ethereum"
+    "3-deploy-distributor:ethereum": "npx hardhat deploy-distributor --network ethereum",
+    "4-sfief-checkpoint:ethereum": "npx hardhat 4-sfief-checkpoint --network ethereum",
+    "5-fee-distributor-checkpoint-token:ethereum": "npx hardhat 5-fee-distributor-checkpoint-token --network ethereum"
   },
   "repository": {
     "type": "git",
