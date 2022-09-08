@@ -11,7 +11,6 @@ import {ERC20_MOCK_NAME} from "../src/utils/names";
 
 /*
     yarn 1-deploy-mock-token:fuji --exec-index 0 --name DAIMock --symbol DAIMock --decimals 18 --mint-amount 10000000000 --mint-to 0x0000000000000000000000000000000000000000 --exec-tx false
-     npx hardhat 1-deploy-mock-token --network localhost --exec-index 0 --name FIEFMock --symbol FIEFMock --decimals 18 --mint-amount 10000000000 --mint-to 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266 --exec-tx true
 */
 task("1-deploy-mock-token", "Deploy the MOCK smart contract.")
     .addParam("execIndex", "Account index executor.", 0, types.int)
